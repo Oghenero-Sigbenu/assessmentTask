@@ -52,7 +52,7 @@ function CalenderBox() {
           {d}
         </span>
         {reminders?.map((item, index) => (
-          <div key={index} className="flex bg-[red] w-full ">
+          <div key={index} className="flex w-full ">
             {item?.date === d && (
               <FaBell className="text-[green]" onClick={() => viewItem(item)}>
                 View
