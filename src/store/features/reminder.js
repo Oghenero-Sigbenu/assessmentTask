@@ -48,7 +48,7 @@ const reminderSlice = createSlice({
     });
     builder.addCase(editUserReminder.fulfilled, (state, action) => {
       state.loading = false;
-      state.userReminders = [...state?.userReminders, action?.payload];
+      state.userReminders = action?.payload;
     });
     builder.addCase(editUserReminder.rejected, (state, action) => {
       state.loading = false;

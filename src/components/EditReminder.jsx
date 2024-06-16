@@ -45,11 +45,15 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
       key: input.key,
       city: input.city,
     };
-
-    let index = userReminders?.map((e) => e.key).indexOf(input?.key);
-    console.log(index, userReminders);
-    userReminders[index] = payload;
-    dispatch(editUserReminder(userReminders));
+    const index = userReminders.findIndex((item) => item.key === input?.key);
+    if (index !== -1) {
+      const newArray = [
+        ...userReminders.slice(0, index),
+        payload,
+        ...userReminders.slice(index + 1),
+      ];
+      dispatch(editUserReminder(newArray));
+    }
     setShowEditCard(false);
   };
   return (

@@ -3,7 +3,7 @@ import moment from "moment";
 import AddReminder from "./AddReminder";
 import { useDispatch, useSelector } from "react-redux";
 import { createUserReminder } from "../store/features/reminder";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaPen } from "react-icons/fa";
 import EditReminder from "./EditReminder";
 
 function CalenderBox() {
@@ -46,7 +46,7 @@ function CalenderBox() {
     daysInMonth.push(
       <td
         key={d}
-        className="pb-[2rem] cursor-pointer pr-[.5rem] text-right border-[grey] border-[.1px]"
+        className="pb-[4rem] relative  cursor-pointer pr-[.5rem] text-right border-[grey] border-[.1px]"
       >
         <span onClick={() => pickDate(d)} key={d}>
           {d}
@@ -54,12 +54,19 @@ function CalenderBox() {
         {reminders?.map((item, index) => (
           <div key={index} className="flex w-full ">
             {item?.date === d && (
-              <FaBell className="text-[green]" onClick={() => viewItem(item)}>
+              <FaBell
+                className="text-[green] absolute bottom-2 left-2 text-[.7rem]"
+                onClick={() => viewItem(item)}
+              >
                 View
               </FaBell>
             )}
           </div>
         ))}
+        <FaPen
+          onClick={() => pickDate(d)}
+          className="text-[#0080fff4] float-right absolute bottom-2 right-2  text-[.5rem]"
+        />
       </td>
     );
   }
@@ -91,7 +98,8 @@ function CalenderBox() {
 
   useEffect(() => {
     setInputField({ ...input, date: selectDate, key: selectDate });
-  }, [selectDate, input]);
+    // eslint-disable-next-line
+  }, [selectDate]);
 
   return (
     <div className="relative flex items-center h-[100vh]">
