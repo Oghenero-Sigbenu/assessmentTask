@@ -11,6 +11,7 @@ function AddReminder({ submit, date, inputData, setShow, handleChange }) {
   const [year] = useState(moment().format("YYYY"));
   const { loading } = useSelector((state) => state.reminder);
 
+  console.log(inputData);
   return (
     <form className="absolute px-[1rem] pt-[.4rem] pb-[1rem] shadow-lg  md:left-[40%] bg-white">
       <FiXCircle className="float-right text-[red]" onClick={() => setShow()} />
@@ -76,7 +77,7 @@ function AddReminder({ submit, date, inputData, setShow, handleChange }) {
           name="city"
           placeholder="Weather"
           required
-          value={inputData?.weather}
+          value={inputData?.weather === "" ? "" : inputData?.weather}
           className="outline-none "
           onChange={(e) => handleChange(e)}
         />

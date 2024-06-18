@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 const KEY = "TVZPNAZERWC35RBXYZ528WU4A";
 const BASE_URL =
   "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline";
@@ -11,8 +12,8 @@ const initialState = {
   city: {},
   ip: "",
   isCityLoading: false,
-  weatherData: {},
-
+  weatherData: "",
+  getWeatherError: {},
   isIpLoading: false,
 };
 
@@ -51,7 +52,10 @@ export const getWeatherDetails = createAsyncThunk(
         throw new Error("No weather data found for the specified date.");
       }
     } catch (err) {
-      rejectWithValue(err);
+      if (err?.response?.data) {
+        toast.error(err?.response?.data);
+      }
+      return rejectWithValue(err?.response?.data);
     }
   }
 );
@@ -93,6 +97,7 @@ const reminderSlice = createSlice({
     builder.addCase(getWeatherDetails.rejected, (state, action) => {
       state.isCityLoading = false;
       state.isIpLoading = false;
+      state.getWeatherError = action.payload;
     });
   },
 });
