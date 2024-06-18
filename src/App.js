@@ -1,10 +1,9 @@
-import "./App.css";
-import CalenderBox from "./components/CalenderBox";
+import { Calender } from "./pages";
 
 function App() {
   return (
     <div className="">
-      <CalenderBox />
+      <Calender />
     </div>
   );
 }

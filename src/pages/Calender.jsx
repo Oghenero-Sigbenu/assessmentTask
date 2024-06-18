@@ -1,9 +1,7 @@
+import { CalenderBox } from "../components";
+
 function Calender() {
-  return (
-    <div className="">
-      <h5>Hello</h5>
-    </div>
-  );
+  return <CalenderBox />;
 }
 
 export default Calender;

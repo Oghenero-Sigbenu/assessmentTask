@@ -5,6 +5,7 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { editUserReminder } from "../store/features/reminder";
+import { TiWeatherCloudy } from "react-icons/ti";
 
 function EditReminder({ setShowEditCard, reminderDetails }) {
   const [month] = useState(moment().format("MMMM"));
@@ -28,6 +29,7 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
         key: reminderDetails?.key,
         city: reminderDetails?.city,
         time: reminderDetails?.time,
+        weather: reminderDetails?.weather,
       });
     }
   }, [reminderDetails]);
@@ -44,8 +46,11 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
       time: input.time,
       key: input.key,
       city: input.city,
+      weather: input?.weather,
     };
+
     const index = userReminders.findIndex((item) => item.key === input?.key);
+
     if (index !== -1) {
       const newArray = [
         ...userReminders.slice(0, index),
@@ -54,6 +59,7 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
       ];
       dispatch(editUserReminder(newArray));
     }
+
     setShowEditCard(false);
   };
   return (
@@ -62,13 +68,14 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
         className="float-right text-[red]"
         onClick={() => setShowEditCard(false)}
       />
-      <h4 className="text-[#282727]">Add Reminder</h4>
+      <h4 className="text-[#282727] font-semibold">Add Reminder</h4>
       <div className="">
         <input
           className="p-[.5rem] border-b-[.1px] mt-[1rem] outline-none"
           placeholder="Add title"
           name="title"
           type="text"
+          maxLength="30"
           value={input?.title}
           onChange={(e) => handleChange(e)}
         />
@@ -112,6 +119,18 @@ function EditReminder({ setShowEditCard, reminderDetails }) {
           required
           className="outline-none "
           value={input?.city}
+          onChange={(e) => handleChange(e)}
+        />
+      </div>
+      <div className="items-center  mt-[1rem] flex p-[.5rem] border-b-[.1px]">
+        <TiWeatherCloudy className="mr-[.5rem] " />
+
+        <input
+          name="city"
+          placeholder="Weather"
+          disabled
+          value={input?.weather}
+          className="outline-none "
           onChange={(e) => handleChange(e)}
         />
       </div>

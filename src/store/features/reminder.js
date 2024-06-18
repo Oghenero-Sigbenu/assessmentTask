@@ -1,9 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+const KEY = "TVZPNAZERWC35RBXYZ528WU4A";
+const BASE_URL =
+  "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline";
 
 const initialState = {
   neewUserReminder: {},
   userReminders: [],
   loading: false,
+  city: {},
+  ip: "",
+  isCityLoading: false,
+  weatherData: {},
+
+  isIpLoading: false,
 };
 
 export const createUserReminder = createAsyncThunk(
@@ -28,6 +38,23 @@ export const editUserReminder = createAsyncThunk(
   }
 );
 
+export const getWeatherDetails = createAsyncThunk(
+  "/getWeather",
+  async (payload, { rejectWithValue }) => {
+    const { city, date } = payload;
+    const url = `${BASE_URL}/${city}/${date}?unitGroup=metric&key=${KEY}&contentType=json`;
+    try {
+      const data = await axios.get(url);
+      if (data?.data?.days && data?.data?.days.length > 0) {
+        return data?.data?.days[0]?.conditions;
+      } else {
+        throw new Error("No weather data found for the specified date.");
+      }
+    } catch (err) {
+      rejectWithValue(err);
+    }
+  }
+);
 const reminderSlice = createSlice({
   name: "reminder",
   initialState,
@@ -40,7 +67,7 @@ const reminderSlice = createSlice({
       state.loading = false;
       state.userReminders = [...state?.userReminders, action?.payload];
     });
-    builder.addCase(createUserReminder.rejected, (state, action) => {
+    builder.addCase(createUserReminder.rejected, (state) => {
       state.loading = false;
     });
     builder.addCase(editUserReminder.pending, (state) => {
@@ -50,8 +77,22 @@ const reminderSlice = createSlice({
       state.loading = false;
       state.userReminders = action?.payload;
     });
-    builder.addCase(editUserReminder.rejected, (state, action) => {
+    builder.addCase(editUserReminder.rejected, (state) => {
       state.loading = false;
+    });
+
+    builder.addCase(getWeatherDetails.pending, (state) => {
+      state.isCityLoading = true;
+      state.isIpLoading = true;
+    });
+    builder.addCase(getWeatherDetails.fulfilled, (state, action) => {
+      state.isCityLoading = false;
+      state.isIpLoading = false;
+      state.weatherData = action.payload;
+    });
+    builder.addCase(getWeatherDetails.rejected, (state, action) => {
+      state.isCityLoading = false;
+      state.isIpLoading = false;
     });
   },
 });

@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import AddReminder from "./AddReminder";
 import { useDispatch, useSelector } from "react-redux";
-import { createUserReminder } from "../store/features/reminder";
+import {
+  createUserReminder,
+  getWeatherDetails,
+} from "../store/features/reminder";
 import { FaBell, FaPen } from "react-icons/fa";
 import EditReminder from "./EditReminder";
+import { getCurrentCity } from "../store/features/weather";
 
 function CalenderBox() {
   const dispatch = useDispatch();
@@ -14,16 +18,20 @@ function CalenderBox() {
   const [showCard, setShowCard] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [showEditCard, setShowEditCard] = useState(false);
-  const [, setTime] = useState(moment().format("LT"));
+  const [month] = useState(moment().format("MM"));
+  const [year] = useState(moment().format("YYYY"));
   const [input, setInputField] = useState({
     title: "",
     time: "",
-    date: +selectDate,
+    date: 0,
     city: "",
     key: +selectDate,
+    weather: "",
   });
-
+  const weatherCondition = useSelector((state) => state?.reminder?.weatherData);
+  const city = useSelector((state) => state?.weather?.city);
   const reminders = useSelector((state) => state?.reminder?.userReminders);
+  const [startDay] = useState(moment().startOf("month").format("d"));
 
   let rows = [];
   let cells = [];
@@ -33,6 +41,7 @@ function CalenderBox() {
 
   const pickDate = (item) => {
     setSelectedDate(item);
+    setInputField({ ...input, date: item, key: item });
     setShowCard(true);
   };
 
@@ -40,13 +49,20 @@ function CalenderBox() {
     setShowEditCard(true);
     setSelectedItem(item);
   };
+  for (let i = 0; i < startDay; i++) {
+    blanks.push(
+      <td className="pb-[4rem] relative  cursor-pointer pr-[.5rem] text-right border-[grey] border-[.1px]">
+        {""}
+      </td>
+    );
+  }
 
   for (let d = 1; d <= moment().daysInMonth(); d++) {
     daysObj = { ...daysObj, day: d };
     daysInMonth.push(
       <td
         key={d}
-        className="pb-[4rem] relative  cursor-pointer pr-[.5rem] text-right border-[grey] border-[.1px]"
+        className="pb-[4rem]   relative  cursor-pointer pr-[.5rem] text-right border-[#9a9797] border-collapse border-solid border-[.7px]"
       >
         <span onClick={() => pickDate(d)} key={d}>
           {d}
@@ -94,18 +110,47 @@ function CalenderBox() {
     e.preventDefault();
     dispatch(createUserReminder(input));
     setShowCard(false);
+    setInputField({
+      title: "",
+      time: "",
+      date: 0,
+      city: "",
+      key: +selectDate,
+      weather: "",
+    });
   };
 
   useEffect(() => {
-    setInputField({ ...input, date: selectDate, key: selectDate });
+    if (showCard && input?.date !== 0) {
+      dispatch(getCurrentCity());
+    }
+    if (city !== "") {
+      setInputField({ ...input, city: city });
+    }
+
     // eslint-disable-next-line
-  }, [selectDate]);
+  }, [showCard && city]);
+
+  useEffect(() => {
+    if (city !== "") {
+      dispatch(
+        getWeatherDetails({
+          city: input.city,
+          date: `${year + "-" + month + "-" + input?.date}`,
+        })
+      );
+    }
+    if (weatherCondition) {
+      setInputField({ ...input, weather: weatherCondition });
+    }
+    // eslint-disable-next-line
+  }, [city, weatherCondition]);
 
   return (
     <div className="relative flex items-center h-[100vh]">
-      <table className="mx-auto w-[95%] lg:w-[700px] ">
+      <table className="mx-auto w-[96%] lg:w-[700px] ">
         <thead className="bg-[#1c5f8b] text-white ">
-          <tr className="  invisible md:visible ">
+          <tr className="hidden md:show  invisible md:visible ">
             {weekDays?.map((item, index) => (
               <th key={index} className=" w-[70px] font-normal">
                 {item}
@@ -114,7 +159,7 @@ function CalenderBox() {
           </tr>
           <tr className="visible py-[.4rem] md:invisible md:hidden">
             {weekDaysAbbr?.map((item, index) => (
-              <th key={index} className="">
+              <th key={index} className="w-[30px] text-[.6rem]">
                 {item}
               </th>
             ))}
@@ -132,9 +177,9 @@ function CalenderBox() {
         <AddReminder
           submit={createReminder}
           date={selectDate}
+          inputData={input}
           setShow={setShowCard}
           handleChange={handleChange}
-          setTime={setTime}
         />
       )}
 
