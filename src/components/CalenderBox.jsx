@@ -150,7 +150,7 @@ function CalenderBox() {
     <div className="relative flex items-center h-[100vh]">
       <table className="mx-auto w-[96%] lg:w-[700px] ">
         <thead className="bg-[#1c5f8b] text-white ">
-          <tr className="hidden md:show  invisible md:visible ">
+          <tr className="hidden md:table-row invisible md:visible ">
             {weekDays?.map((item, index) => (
               <th key={index} className=" w-[70px] font-normal">
                 {item}
