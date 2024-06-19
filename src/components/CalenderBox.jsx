@@ -133,6 +133,13 @@ function CalenderBox() {
   }, [showCard && city]);
 
   useEffect(() => {
+    if (weatherCondition) {
+      setInputField({ ...input, weather: weatherCondition });
+    }
+    // eslint-disable-next-line
+  }, [weatherCondition]);
+
+  const handleBlur = () => {
     if (input?.city !== "") {
       dispatch(
         getWeatherDetails({
@@ -141,12 +148,7 @@ function CalenderBox() {
         })
       );
     }
-    if (weatherCondition) {
-      setInputField({ ...input, weather: weatherCondition });
-    }
-    // eslint-disable-next-line
-  }, [input?.city, weatherCondition]);
-
+  };
   return (
     <div className="relative flex items-center h-[100vh]">
       <table className="mx-auto w-[96%] lg:w-[700px] ">
@@ -178,6 +180,7 @@ function CalenderBox() {
         <AddReminder
           submit={createReminder}
           date={selectDate}
+          handleBlur={handleBlur}
           inputData={input}
           setShow={setShowCard}
           handleChange={handleChange}

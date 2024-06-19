@@ -6,7 +6,14 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { TiWeatherCloudy } from "react-icons/ti";
 
-function AddReminder({ submit, date, inputData, setShow, handleChange }) {
+function AddReminder({
+  submit,
+  handleBlur,
+  date,
+  inputData,
+  setShow,
+  handleChange,
+}) {
   const [month] = useState(moment().format("MMMM"));
   const [year] = useState(moment().format("YYYY"));
   const { loading } = useSelector((state) => state.reminder);
@@ -21,6 +28,7 @@ function AddReminder({ submit, date, inputData, setShow, handleChange }) {
           placeholder="Add title"
           name="title"
           type="text"
+          required
           maxLength="30"
           value={inputData?.title}
           onChange={(e) => handleChange(e)}
@@ -66,6 +74,7 @@ function AddReminder({ submit, date, inputData, setShow, handleChange }) {
           required
           value={inputData?.city}
           className="outline-none "
+          onBlur={handleBlur}
           onChange={(e) => handleChange(e)}
         />
       </div>
