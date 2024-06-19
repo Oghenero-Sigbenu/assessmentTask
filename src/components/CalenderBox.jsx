@@ -28,9 +28,6 @@ function CalenderBox() {
     key: +selectDate,
     weather: "",
   });
-  const getWeatherError = useSelector(
-    (state) => state?.reminder?.getWeatherError
-  );
 
   const weatherCondition = useSelector((state) => state?.reminder?.weatherData);
   const city = useSelector((state) => state?.weather?.city);
