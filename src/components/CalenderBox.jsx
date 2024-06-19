@@ -133,7 +133,7 @@ function CalenderBox() {
   }, [showCard && city]);
 
   useEffect(() => {
-    if (city !== "") {
+    if (input?.city !== "") {
       dispatch(
         getWeatherDetails({
           city: input.city,
@@ -145,7 +145,7 @@ function CalenderBox() {
       setInputField({ ...input, weather: weatherCondition });
     }
     // eslint-disable-next-line
-  }, [city, weatherCondition]);
+  }, [input?.city, weatherCondition]);
 
   return (
     <div className="relative flex items-center h-[100vh]">

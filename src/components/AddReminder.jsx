@@ -11,7 +11,6 @@ function AddReminder({ submit, date, inputData, setShow, handleChange }) {
   const [year] = useState(moment().format("YYYY"));
   const { loading } = useSelector((state) => state.reminder);
 
-  console.log(inputData);
   return (
     <form className="absolute px-[1rem] pt-[.4rem] pb-[1rem] shadow-lg  md:left-[40%] bg-white">
       <FiXCircle className="float-right text-[red]" onClick={() => setShow()} />
